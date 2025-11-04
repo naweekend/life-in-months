@@ -10,6 +10,11 @@ export default function App() {
   const monthsInYear = 12;
   const totalMonths = totalYears * monthsInYear;
 
+  // Age ranges in months
+  const youthMonths = 33 * monthsInYear;
+  const middleMonths = (55 - 33) * monthsInYear; // 22 years
+  const oldMonths = (70 - 55) * monthsInYear; // 15 years
+
   const monthsLived = birthdate
     ? Math.min(
       totalMonths,
@@ -20,6 +25,12 @@ export default function App() {
       )
     )
     : 0;
+
+  const percentageLived = (start, end) => {
+    if (!birthdate) return 0;
+    const livedInRange = Math.min(end, monthsLived) - start;
+    return livedInRange > 0 ? Math.round((livedInRange / (end - start)) * 100) : 0;
+  };
 
   const getMonthYear = (index) => {
     if (!birthdate) return "";
@@ -63,18 +74,35 @@ export default function App() {
         <>
           <div className="space-y-2 mb-6 text-center">
             <p>Each dot is a month of your life</p>
+            <p className="text-sm opacity-85">
+              You have spent {percentageLived(0, youthMonths)}% of your youth
+            </p>
+            <p className="text-sm opacity-85">
+              You have spent {percentageLived(youthMonths, youthMonths + middleMonths)}% of middle age
+            </p>
+            <p className="text-sm opacity-85">
+              You have spent {percentageLived(youthMonths + middleMonths, totalMonths)}% of old age
+            </p>
           </div>
 
           <div className="grid grid-cols-30 md:gap-2 gap-1 justify-center max-w-full">
-            {Array.from({ length: totalMonths }).map((_, i) => (
-              <div class="tooltip" data-tip={getMonthYear(i)}>
-                <div
-                  key={i}
-                  className={`md:w-3 w-2 md:h-3 h-2 rounded-full cursor-pointer ${i < monthsLived ? "bg-red-500" : "bg-green-300"
-                    }`}
-                />
-              </div>
-            ))}
+            {Array.from({ length: totalMonths }).map((_, i) => {
+              let color = "bg-green-300"; // default future month
+
+              if (i < monthsLived) {
+                if (i < youthMonths) color = "bg-gray-500"; // youth
+                else if (i < youthMonths + middleMonths) color = "bg-gray-500"; // middle
+                else color = "bg-gray-500"; // old
+              }
+
+              return (
+                <div className="tooltip" key={i} data-tip={getMonthYear(i)}>
+                  <div
+                    className={`md:w-3 w-2 md:h-3 h-2 rounded-full cursor-pointer ${color}`}
+                  />
+                </div>
+              );
+            })}
           </div>
 
           <Button
@@ -97,7 +125,12 @@ export default function App() {
       )}
 
       <div className="fixed text-sm opacity-80 bottom-2 left-2">
-        <p>made by <a className="underline" target="_blank" href="https://github.com/naweekend">nabeel</a></p>
+        <p>
+          made by{" "}
+          <a className="underline" target="_blank" href="https://github.com/naweekend">
+            nabeel
+          </a>
+        </p>
       </div>
     </div>
   );
