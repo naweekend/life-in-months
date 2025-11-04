@@ -38,15 +38,15 @@ export default function App() {
       {/* Date picker */}
       {!showGrid && (
         <div className="flex flex-col gap-2 mb-4">
-          <label htmlFor="birthdate" className="font-medium">
-            Date of birth
+          <label htmlFor="birthdate" className="font-medium opacity-85">
+            Enter Date of Birth
           </label>
           <input
             type="date"
             id="birthdate"
             value={birthdate}
             onChange={(e) => setBirthdate(e.target.value)}
-            className="input border bg-black text-white py-2 rounded-md w-48"
+            className="input border bg-white text-black py-2 rounded-md w-48"
           />
         </div>
       )}
